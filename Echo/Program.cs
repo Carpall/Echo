@@ -111,10 +111,15 @@ namespace Echo
             Console.Clear();
             setColor(ConsoleColor.White);
         }
+        public static void warm(string wrm)
+        {
+            setColor(ConsoleColor.DarkYellow);
+            println(wrm);
+            setColor(ConsoleColor.White);
+        }
 
         static void Main(string[] args)
         {
-            // -$>
             Package Echo = new Package();
             Host Server = new Host();
             Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
@@ -163,6 +168,12 @@ namespace Echo
                     case "gcc":
                         info($"Current channel: {Server.CurrentChannel}");
                         break;
+                    case "en":
+                        print("> ");
+                        string y = Encryption.Rot13.Encrypt(read());
+                        println(y);
+                        println(Encryption.Rot13.Decrypt(y));
+                        break;
                     case "gc":
                         for(int i=0;i<Echo.AvaiableChannels.Count();i++)
                             info(Echo.AvaiableChannels[i].ToString());
@@ -200,6 +211,9 @@ namespace Echo
                     case "ce":
                         print("> ");
                         Echo.CurrentEncryption = readCmd();
+                        break;
+                    default:
+                        warm("Bad syntax!");
                         break;
                 }
             }
@@ -300,5 +314,31 @@ namespace Echo
     }
     class Encryption
     {
+        static string alphabet = "abdefghijklmnopqrstuvwxyz";
+        public static class Rot13
+        {
+            public static string Encrypt(string text)
+            {
+                string result = "";
+                for (int i = 0; i < text.Length; i++) {
+                    if (alphabet.IndexOf(text[i]) + 12 < alphabet.Length)
+                        result += alphabet[alphabet.IndexOf(text[i]) + 12];
+                    else
+                        result += alphabet[alphabet.IndexOf(text[i]) + (alphabet.Length - alphabet.IndexOf(text[i])) + (13 - (alphabet.Length - alphabet.IndexOf(text[i])))];
+                }
+                return result;
+            }
+            public static string Decrypt(string text)
+            {
+                string result = "";
+                for (int i = 0; i < text.Length; i++) {
+                    if (alphabet.IndexOf(text[i]) - 13 > 0)
+                        result += alphabet[alphabet.IndexOf(text[i]) - 13];
+                    else
+                        result += alphabet[alphabet.IndexOf(text[i]) - (alphabet.Length + alphabet.IndexOf(text[i])) - (13 + (alphabet.Length + alphabet.IndexOf(text[i])))];
+                }
+                return result;
+            }
+        }
     }
 }
