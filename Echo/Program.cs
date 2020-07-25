@@ -131,19 +131,20 @@ namespace Echo
                 switch (readCmd()) {
 
                     case "help":
-                        println("ref -> refresh 'echo' to get messages of currect channel");
-                        println("send -> send a message on current channel");
-                        println("sendfile/send file -> send a message contains a file on current channel");
-                        println("res -> reset current chat history");
-                        println("ce -> change encryption");
-                        println("ge -> get all avaiables encryptions");
-                        println("gce -> get current encryption");
-                        println("cc -> change channel");
-                        println("gc -> get all avaiables encryptions");
-                        println("gcc -> get current encryption");
-                        println("csl -> clear console");
-                        println("exit -> exit from 'echo'");
-                        println("help -> get all commands describetion");
+                        info("ref -> refresh 'echo' to get messages of currect channel");
+                        info("send -> send a message on current channel");
+                        info("sendfile/send file -> send a message contains a file on current channel");
+                        info("down -> download files using its index");
+                        info("res -> reset current chat history");
+                        info("ce -> change encryption");
+                        info("ge -> get all avaiables encryptions");
+                        info("gce -> get current encryption");
+                        info("cc -> change channel");
+                        info("gc -> get all avaiables encryptions");
+                        info("gcc -> get current encryption");
+                        info("csl -> clear console");
+                        info("exit -> exit from 'echo'");
+                        info("help -> get all commands describetion");
                         break;
                     case "exit":
                         print("y/n\n|> ");
@@ -156,7 +157,7 @@ namespace Echo
                         clear();
                         break;
                     case "cc":
-                        print("|> ");
+                        print("> ");
                         Server.CurrentChannel = readCmd();
                         break;
                     case "gcc":
@@ -167,8 +168,15 @@ namespace Echo
                             info(Echo.AvaiableChannels[i].ToString());
                         break;
                     case "send":
-                        print("|> ");
+                        print("> ");
                         Server.SendMessage($"[m]{read()}[nl]");
+                        break;
+                    case "down":
+                        Server.ReceiveFile();
+                        break;
+                    case "sendfile":
+                        print("> ");
+                        Server.SendFile(System.IO.File.ReadAllText(read()));
                         break;
                     case "ref":
                         setColor(ConsoleColor.DarkMagenta);
@@ -190,7 +198,7 @@ namespace Echo
                         info($"Current encryption method: {Echo.CurrentEncryption.ToString()}");
                         break;
                     case "ce":
-                        print("|> ");
+                        print("> ");
                         Echo.CurrentEncryption = readCmd();
                         break;
                 }
@@ -212,6 +220,7 @@ namespace Echo
         }
         // Public
         public string Messages = "";
+        public string Files = "";
         public string CurrentChannel
         {
             get {
@@ -242,6 +251,19 @@ namespace Echo
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
         }
+        public void ReceiveFile()
+        {
+            string username = Environment.UserName;
+            try {
+                using (System.IO.StreamWriter sw = new System.IO.StreamWriter($@"C:\Users\{username}\Downloads\echoFile")) {
+                    string f = Client.Get("Files").Body.Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\t", "\t").Replace("\\a", "\a").Replace("\\v", "\v").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\\"", "\"");
+                    sw.Write(f.Substring(1, f.Count()-2));
+                }
+            } catch (Exception) {
+                Program.except("Connection, to main server, failed.", "Check your connection!");
+            }
+            System.Diagnostics.Process.Start($@"C:\Users\{username}\Downloads\echoFile");
+        }
         public async void Reset()
         {
             Program.print("pass|> ");
@@ -260,10 +282,17 @@ namespace Echo
         }
         public async void SendMessage(string message)
         {
-            ReceiveMessage();
             try {
-                FirebaseResponse response = await Client.PushTaskAsync(_currcha.ToString(), message);
-                //Client.Push<string>(_currcha.ToString(), message);
+                await Client.PushTaskAsync(_currcha.ToString(), message);
+            } catch (Exception) {
+                Program.except("Connection, to main server, failed.", "Check your connection!");
+            }
+        }
+
+        public void SendFile(string fileContent)
+        {
+            try {
+                Client.Set("Files", fileContent);
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
