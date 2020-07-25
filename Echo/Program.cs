@@ -147,7 +147,7 @@ namespace Echo
                         break;
                     case "exit":
                         print("y/n\n|> ");
-                        IsRun = (readCmd().ToCharArray()[0] == 'y') ? false:true;
+                        IsRun = (readCmd()[0] == 'y') ? false:true;
                         break;
                     case "res":
                         Server.Reset();
@@ -174,7 +174,11 @@ namespace Echo
                         setColor(ConsoleColor.DarkMagenta);
                         print("Messages:\n");
                         setColor(ConsoleColor.DarkYellow);
-                        println(Server.Messages.Replace("[nl]", "\n"));
+                        string[] separeMessages = Server.Messages.Replace("[nl]", "⁕").Split('⁕');
+                        try {
+                            foreach (string splittingPart in separeMessages)
+                                println(splittingPart.Substring(splittingPart.IndexOf("[m]")));
+                        } catch (ArgumentOutOfRangeException) { }
                         setColor(ConsoleColor.White);
                         break;
                     case "ge":
@@ -233,7 +237,7 @@ namespace Echo
         {
             try {
                 FirebaseResponse Response = await Client.GetTaskAsync(_currcha.ToString());
-                Messages = Response.Body.Substring(1, Response.Body.Count() - 2);
+                Messages = Response.Body;
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
@@ -247,7 +251,6 @@ namespace Echo
                 try {
                     SetResponse response = await Client.SetTaskAsync(_currcha.ToString(), "");
                     Client.Set<string>(_currcha.ToString(), "");
-                    Messages = "";
                 } catch (Exception) {
                     Program.except("Connection, to main server, failed.", "Check your connection!");
                 }
@@ -259,8 +262,8 @@ namespace Echo
         {
             ReceiveMessage();
             try {
-                SetResponse response = await Client.SetTaskAsync(_currcha.ToString(), message);
-                Client.Set<string>(_currcha.ToString(), Messages+message);
+                FirebaseResponse response = await Client.PushTaskAsync(_currcha.ToString(), message);
+                //Client.Push<string>(_currcha.ToString(), message);
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
