@@ -152,7 +152,7 @@ namespace Echo
                         info("help -> get all commands describetion");
                         break;
                     case "exit":
-                        print("y/n\n|> ");
+                        print("y/n\n> ");
                         IsRun = (readCmd()[0] == 'y') ? false:true;
                         break;
                     case "res":
@@ -167,12 +167,6 @@ namespace Echo
                         break;
                     case "gcc":
                         info($"Current channel: {Server.CurrentChannel}");
-                        break;
-                    case "en":
-                        print("> ");
-                        string y = Encryption.Rot13.Encrypt(read());
-                        println(y);
-                        println(Encryption.Rot13.Decrypt(y));
                         break;
                     case "gc":
                         for(int i=0;i<Echo.AvaiableChannels.Count();i++)
@@ -314,17 +308,18 @@ namespace Echo
     }
     class Encryption
     {
-        static string alphabet = "abdefghijklmnopqrstuvwxyz";
+        static string alphabet = "abcdefghijklmnopqrstuvwxyz";
         public static class Rot13
         {
             public static string Encrypt(string text)
             {
                 string result = "";
                 for (int i = 0; i < text.Length; i++) {
-                    if (alphabet.IndexOf(text[i]) + 12 < alphabet.Length)
-                        result += alphabet[alphabet.IndexOf(text[i]) + 12];
-                    else
-                        result += alphabet[alphabet.IndexOf(text[i]) + (alphabet.Length - alphabet.IndexOf(text[i])) + (13 - (alphabet.Length - alphabet.IndexOf(text[i])))];
+                    if (!alphabet.Contains(text[i].ToString())) {
+                        char chr = text[i].ToString().ToLower()[0];
+                        if (alphabet.Contains(chr.ToString())) result += (alphabet.IndexOf(chr) + 13 >= 26) ? alphabet[13 - (26 - alphabet.IndexOf(chr))].ToString().ToUpper()[0] : alphabet[alphabet.IndexOf(chr) + 13].ToString().ToUpper()[0];
+                        else result += text[i];
+                    } else result += (alphabet.IndexOf(text[i]) + 13 >= 26) ? alphabet[13 - (26 - alphabet.IndexOf(text[i]))] : alphabet[alphabet.IndexOf(text[i]) + 13];
                 }
                 return result;
             }
@@ -332,10 +327,11 @@ namespace Echo
             {
                 string result = "";
                 for (int i = 0; i < text.Length; i++) {
-                    if (alphabet.IndexOf(text[i]) - 13 > 0)
-                        result += alphabet[alphabet.IndexOf(text[i]) - 13];
-                    else
-                        result += alphabet[alphabet.IndexOf(text[i]) - (alphabet.Length + alphabet.IndexOf(text[i])) - (13 + (alphabet.Length + alphabet.IndexOf(text[i])))];
+                    if (!alphabet.Contains(text[i].ToString())) {
+                        char chr = text[i].ToString().ToLower()[0];
+                        if (alphabet.Contains(chr.ToString())) result += (alphabet.IndexOf(chr) - 13 < 0) ? alphabet[13 + alphabet.IndexOf(chr)].ToString().ToUpper()[0] : alphabet[alphabet.IndexOf(chr) - 13].ToString().ToUpper()[0];
+                        else result += text[i];
+                    } else result += (alphabet.IndexOf(text[i]) - 13 < 0) ? alphabet[13 + alphabet.IndexOf(text[i])] : alphabet[alphabet.IndexOf(text[i]) - 13];
                 }
                 return result;
             }
