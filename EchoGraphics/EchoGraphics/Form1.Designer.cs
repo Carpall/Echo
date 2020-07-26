@@ -33,12 +33,13 @@
             this.MainDrag = new Guna.UI2.WinForms.Guna2DragControl(this.components);
             this.MainBar = new Guna.UI2.WinForms.Guna2Panel();
             this.guna2ControlBox2 = new Guna.UI2.WinForms.Guna2ControlBox();
-            this.MessageBox = new Guna.UI2.WinForms.Guna2TextBox();
+            this.TypeMessageBox = new Guna.UI2.WinForms.Guna2TextBox();
             this.ToolTip = new Guna.UI2.WinForms.Guna2HtmlToolTip();
             this.Send = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ControlBox1 = new Guna.UI2.WinForms.Guna2ControlBox();
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.AllMessagesBox = new Guna.UI2.WinForms.Guna2TextBox();
+            this.Update = new System.Windows.Forms.Timer(this.components);
             this.MainBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -80,36 +81,36 @@
             this.guna2ControlBox2.TabIndex = 4;
             this.ToolTip.SetToolTip(this.guna2ControlBox2, "Minimize");
             // 
-            // MessageBox
+            // TypeMessageBox
             // 
-            this.MessageBox.AcceptsTab = true;
-            this.MessageBox.Animated = true;
-            this.MessageBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.MessageBox.BorderColor = System.Drawing.SystemColors.MenuHighlight;
-            this.MessageBox.BorderRadius = 5;
-            this.MessageBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.MessageBox.DefaultText = "";
-            this.MessageBox.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.MessageBox.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.MessageBox.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.MessageBox.DisabledState.Parent = this.MessageBox;
-            this.MessageBox.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.MessageBox.FillColor = System.Drawing.Color.Transparent;
-            this.MessageBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.MessageBox.FocusedState.Parent = this.MessageBox;
-            this.MessageBox.Font = new System.Drawing.Font("Hack", 9F);
-            this.MessageBox.ForeColor = System.Drawing.Color.Transparent;
-            this.MessageBox.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.MessageBox.HoverState.Parent = this.MessageBox;
-            this.MessageBox.Location = new System.Drawing.Point(12, 301);
-            this.MessageBox.Name = "MessageBox";
-            this.MessageBox.PasswordChar = '\0';
-            this.MessageBox.PlaceholderForeColor = System.Drawing.Color.White;
-            this.MessageBox.PlaceholderText = "Write a crypted message";
-            this.MessageBox.SelectedText = "";
-            this.MessageBox.ShadowDecoration.Parent = this.MessageBox;
-            this.MessageBox.Size = new System.Drawing.Size(574, 25);
-            this.MessageBox.TabIndex = 0;
+            this.TypeMessageBox.AcceptsTab = true;
+            this.TypeMessageBox.Animated = true;
+            this.TypeMessageBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.TypeMessageBox.BorderColor = System.Drawing.SystemColors.MenuHighlight;
+            this.TypeMessageBox.BorderRadius = 5;
+            this.TypeMessageBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.TypeMessageBox.DefaultText = "";
+            this.TypeMessageBox.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.TypeMessageBox.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.TypeMessageBox.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.TypeMessageBox.DisabledState.Parent = this.TypeMessageBox;
+            this.TypeMessageBox.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.TypeMessageBox.FillColor = System.Drawing.Color.Transparent;
+            this.TypeMessageBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.TypeMessageBox.FocusedState.Parent = this.TypeMessageBox;
+            this.TypeMessageBox.Font = new System.Drawing.Font("Hack", 9F);
+            this.TypeMessageBox.ForeColor = System.Drawing.Color.Transparent;
+            this.TypeMessageBox.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.TypeMessageBox.HoverState.Parent = this.TypeMessageBox;
+            this.TypeMessageBox.Location = new System.Drawing.Point(12, 301);
+            this.TypeMessageBox.Name = "TypeMessageBox";
+            this.TypeMessageBox.PasswordChar = '\0';
+            this.TypeMessageBox.PlaceholderForeColor = System.Drawing.Color.White;
+            this.TypeMessageBox.PlaceholderText = "Write a crypted message";
+            this.TypeMessageBox.SelectedText = "";
+            this.TypeMessageBox.ShadowDecoration.Parent = this.TypeMessageBox;
+            this.TypeMessageBox.Size = new System.Drawing.Size(574, 25);
+            this.TypeMessageBox.TabIndex = 0;
             // 
             // ToolTip
             // 
@@ -139,6 +140,7 @@
             this.Send.TabIndex = 1;
             this.Send.Text = "Send";
             this.ToolTip.SetToolTip(this.Send, "Send messages using current encryption method");
+            this.Send.Click += new System.EventHandler(this.Send_Click);
             // 
             // guna2ControlBox1
             // 
@@ -194,11 +196,15 @@
             this.AllMessagesBox.PasswordChar = '\0';
             this.AllMessagesBox.PlaceholderForeColor = System.Drawing.Color.White;
             this.AllMessagesBox.PlaceholderText = "";
-            this.AllMessagesBox.ReadOnly = true;
             this.AllMessagesBox.SelectedText = "";
             this.AllMessagesBox.ShadowDecoration.Parent = this.AllMessagesBox;
             this.AllMessagesBox.Size = new System.Drawing.Size(639, 270);
             this.AllMessagesBox.TabIndex = 2;
+            // 
+            // Update
+            // 
+            this.Update.Interval = 1;
+            this.Update.Tick += new System.EventHandler(this.Update_Tick);
             // 
             // Main
             // 
@@ -210,7 +216,7 @@
             this.Controls.Add(this.guna2ControlBox1);
             this.Controls.Add(this.MainBar);
             this.Controls.Add(this.Send);
-            this.Controls.Add(this.MessageBox);
+            this.Controls.Add(this.TypeMessageBox);
             this.Controls.Add(this.AllMessagesBox);
             this.Font = new System.Drawing.Font("Hack", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.Highlight;
@@ -233,7 +239,7 @@
 
         private Guna.UI2.WinForms.Guna2Elipse MainRound;
         private Guna.UI2.WinForms.Guna2DragControl MainDrag;
-        private Guna.UI2.WinForms.Guna2TextBox MessageBox;
+        private Guna.UI2.WinForms.Guna2TextBox TypeMessageBox;
         private Guna.UI2.WinForms.Guna2HtmlToolTip ToolTip;
         private Guna.UI2.WinForms.Guna2Button Send;
         private Guna.UI2.WinForms.Guna2TextBox AllMessagesBox;
@@ -241,6 +247,7 @@
         private Guna.UI2.WinForms.Guna2ControlBox guna2ControlBox1;
         private Guna.UI2.WinForms.Guna2ControlBox guna2ControlBox2;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
+        private System.Windows.Forms.Timer Update;
     }
 }
 

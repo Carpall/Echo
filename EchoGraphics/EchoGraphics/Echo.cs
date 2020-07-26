@@ -63,29 +63,17 @@ namespace Echo
         {
             success($"Encryption saved as {enc.ToString()}");
         }
-        public static void setColor(ConsoleColor color)
-        {
-            Console.ForegroundColor = color;
-        }
         public static void except(string err, string help)
-        {
-            setColor(ConsoleColor.DarkRed);
+        {//creare per ogni tipo una info nella msbx
             println($"Except: {err}\nHelp: {help}");
-            setColor(ConsoleColor.White);
         }
         public static void println(string arg)
         {
-            Console.WriteLine(arg);
-        }
-        public static void print(string arg)
-        {
-            Console.Write(arg);
+            System.Windows.Forms.MessageBox.Show(arg);
         }
         public static void info(string inf)
         {
-            setColor(ConsoleColor.DarkBlue);
             Console.WriteLine(inf);
-            setColor(ConsoleColor.White);
         }
         public static string readCmd()
         {
@@ -101,20 +89,11 @@ namespace Echo
         }
         public static void success(string succ)
         {
-            setColor(ConsoleColor.DarkGreen);
             println($"Success: {succ}");
-            setColor(ConsoleColor.White);
-        }
-        public static void clear()
-        {
-            Console.Clear();
-            setColor(ConsoleColor.White);
         }
         public static void warm(string wrm)
         {
-            setColor(ConsoleColor.DarkYellow);
             println(wrm);
-            setColor(ConsoleColor.White);
         }
     }
     class Host
@@ -159,8 +138,7 @@ namespace Echo
         public async void ReceiveMessage()
         {
             try {
-                FirebaseResponse Response = await Client.GetTaskAsync(_currcha.ToString());
-                Messages = Response.Body;
+                Messages = (await Client.GetTaskAsync(_currcha.ToString())).Body;
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
@@ -180,7 +158,6 @@ namespace Echo
         }
         public async void Reset()
         {
-            Program.print("pass|> ");
             if (Program.read() == pass[0]) {
                 ReceiveMessage();
                 Program.success("Pass Correct!");
