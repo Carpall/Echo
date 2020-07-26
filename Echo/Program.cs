@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using FireSharp;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
 using Echo.Properties;
+using Echo;
 
 namespace Echo
 {
@@ -24,7 +24,7 @@ namespace Echo
     }
     class Package
     {
-        /// Private
+        // Private
         private Encryptions _currenc = Encryptions.Rot13;
 
         // Public
@@ -118,100 +118,96 @@ namespace Echo
             setColor(ConsoleColor.White);
         }
 
-        static void Main(string[] args)
-        {
-            Package Echo = new Package();
-            Host Server = new Host();
-            Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
-            Server.CurrentChannel = Settings.Default.CurrentChannel;
-            clear();
-            bool IsRun = true;
-            info(Echo.Info);
+        //static void ()
+        //{
+        //    Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
+        //    Server.CurrentChannel = Settings.Default.CurrentChannel;
+        //    clear();
+        //    bool IsRun = true;
+        //    info(Echo.Info);
 
-            Server.Start();
+        //    Server.Start();
 
-            while (IsRun) {
-                print("@> ");
-                Server.ReceiveMessage();
-                switch (readCmd()) {
+        //    while (IsRun) {
+        //        Server.ReceiveMessage();
+        //        switch ("") {
 
-                    case "help":
-                        info("ref -> refresh 'echo' to get messages of currect channel");
-                        info("send -> send a message on current channel");
-                        info("sendfile/send file -> send a message contains a file on current channel");
-                        info("down -> download files using its index");
-                        info("res -> reset current chat history");
-                        info("ce -> change encryption");
-                        info("ge -> get all avaiables encryptions");
-                        info("gce -> get current encryption");
-                        info("cc -> change channel");
-                        info("gc -> get all avaiables encryptions");
-                        info("gcc -> get current encryption");
-                        info("csl -> clear console");
-                        info("exit -> exit from 'echo'");
-                        info("help -> get all commands describetion");
-                        break;
-                    case "exit":
-                        print("y/n\n> ");
-                        IsRun = (readCmd()[0] == 'y') ? false:true;
-                        break;
-                    case "res":
-                        Server.Reset();
-                        break;
-                    case "cls":
-                        clear();
-                        break;
-                    case "cc":
-                        print("> ");
-                        Server.CurrentChannel = readCmd();
-                        break;
-                    case "gcc":
-                        info($"Current channel: {Server.CurrentChannel}");
-                        break;
-                    case "gc":
-                        for(int i=0;i<Echo.AvaiableChannels.Count();i++)
-                            info(Echo.AvaiableChannels[i].ToString());
-                        break;
-                    case "send":
-                        print("> ");
-                        Server.SendMessage($"[m]{read()}[nl]");
-                        break;
-                    case "down":
-                        Server.ReceiveFile();
-                        break;
-                    case "sendfile":
-                        print("> ");
-                        Server.SendFile(System.IO.File.ReadAllText(read()));
-                        break;
-                    case "ref":
-                        setColor(ConsoleColor.DarkMagenta);
-                        print("Messages:\n");
-                        setColor(ConsoleColor.DarkYellow);
-                        string[] separeMessages = Server.Messages.Replace("[nl]", "⁕").Split('⁕');
-                        try {
-                            foreach (string splittingPart in separeMessages)
-                                println(splittingPart.Substring(splittingPart.IndexOf("[m]")));
-                        } catch (ArgumentOutOfRangeException) { }
-                        setColor(ConsoleColor.White);
-                        break;
-                    case "ge":
-                        for (int i = 0; i < Echo.AvaiableEncryptions.Count(); i++) {
-                            println($"{i}.{Echo.AvaiableEncryptions[i]}");
-                        }
-                        break;
-                    case "gce":
-                        info($"Current encryption method: {Echo.CurrentEncryption.ToString()}");
-                        break;
-                    case "ce":
-                        print("> ");
-                        Echo.CurrentEncryption = readCmd();
-                        break;
-                    default:
-                        warm("Bad syntax!");
-                        break;
-                }
-            }
-        }
+        //            case "help":
+        //                info("ref -> refresh 'echo' to get messages of currect channel");
+        //                info("send -> send a message on current channel");
+        //                info("sendfile/send file -> send a message contains a file on current channel");
+        //                info("down -> download files using its index");
+        //                info("res -> reset current chat history");
+        //                info("ce -> change encryption");
+        //                info("ge -> get all avaiables encryptions");
+        //                info("gce -> get current encryption");
+        //                info("cc -> change channel");
+        //                info("gc -> get all avaiables encryptions");
+        //                info("gcc -> get current encryption");
+        //                info("csl -> clear console");
+        //                info("exit -> exit from 'echo'");
+        //                info("help -> get all commands describetion");
+        //                break;
+        //            case "exit":
+        //                print("y/n\n> ");
+        //                IsRun = (readCmd()[0] == 'y') ? false:true;
+        //                break;
+        //            case "res":
+        //                Server.Reset();
+        //                break;
+        //            case "cls":
+        //                clear();
+        //                break;
+        //            case "cc":
+        //                print("> ");
+        //                Server.CurrentChannel = readCmd();
+        //                break;
+        //            case "gcc":
+        //                info($"Current channel: {Server.CurrentChannel}");
+        //                break;
+        //            case "gc":
+        //                for(int i=0;i<Echo.AvaiableChannels.Count();i++)
+        //                    info(Echo.AvaiableChannels[i].ToString());
+        //                break;
+        //            case "send":
+        //                print("> ");
+        //                Server.SendMessage($"[m]{Encryption.Encrypt(read(), Echo.CurrentEncryption)}[nl]");
+        //                break;
+        //            case "down":
+        //                Server.ReceiveFile();
+        //                break;
+        //            case "sendfile":
+        //                print("> ");
+        //                Server.SendFile(System.IO.File.ReadAllText(read()));
+        //                break;
+        //            case "ref":
+        //                setColor(ConsoleColor.DarkMagenta);
+        //                print("Messages:\n");
+        //                setColor(ConsoleColor.DarkYellow);
+        //                string[] separeMessages = Server.Messages.Replace("[nl]", "⁕").Split('⁕');
+        //                try {
+        //                    foreach (string splittingPart in separeMessages)
+        //                        println(splittingPart.Substring(splittingPart.IndexOf("[m]")));
+        //                } catch (ArgumentOutOfRangeException) { }
+        //                setColor(ConsoleColor.White);
+        //                break;
+        //            case "ge":
+        //                for (int i = 0; i < Echo.AvaiableEncryptions.Count(); i++) {
+        //                    println($"{i}.{Echo.AvaiableEncryptions[i]}");
+        //                }
+        //                break;
+        //            case "gce":
+        //                info($"Current encryption method: {Echo.CurrentEncryption.ToString()}");
+        //                break;
+        //            case "ce":
+        //                print("> ");
+        //                Echo.CurrentEncryption = readCmd();
+        //                break;
+        //            default:
+        //                warm("Bad syntax!");
+        //                break;
+        //        }
+              //}
     }
     class Host
     {
@@ -308,6 +304,24 @@ namespace Echo
     }
     class Encryption
     {
+        public static string Encrypt(string toEn, Encryptions en)
+        {
+            switch (en) {
+                case Encryptions.Rot13:
+                    return Rot13.Encrypt(toEn);
+                default:
+                    return toEn;
+            }
+        }
+        public static string Decrypt(string toDe, Encryptions en)
+        {
+            switch (en) {
+                case Encryptions.Rot13:
+                    return Rot13.Decrypt(toDe);
+                default:
+                    return toDe;
+            }
+        }
         static string alphabet = "abcdefghijklmnopqrstuvwxyz";
         public static class Rot13
         {

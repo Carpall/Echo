@@ -18,10 +18,7 @@ C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\Echo\Echo\bin\Debug\Micr
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\Echo\Echo\bin\Debug\RestSharp.xml
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\Echo\Echo\bin\Debug\System.Net.Http.Extensions.xml
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\Echo\Echo\bin\Debug\System.Net.Http.Primitives.xml
-C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\Echo.exe.config
-C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\obj\Debug\Echo.exe
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\obj\Debug\Echo.pdb
-C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\Echo.exe
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\Echo.pdb
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\FireSharp.dll
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\FireSharp.Serialization.JsonNet.dll
@@ -38,3 +35,7 @@ C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\De
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\System.Net.Http.Extensions.xml
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\System.Net.Http.Primitives.xml
 C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\obj\Debug\Echo.csprojResolveAssemblyReference.cache
+C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\obj\Debug\Echo.csproj.App.config
+C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\Echo.dll.config
+C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\bin\Debug\Echo.dll
+C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\EchoGit\Echo\Echo\obj\Debug\Echo.dll
