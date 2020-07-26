@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace EchoGraphics
 {
-    public partial class Form1 : Form
+    public partial class EchoSettings : Form
     {
-        public Form1()
+        public EchoSettings()
         {
             InitializeComponent();
         }

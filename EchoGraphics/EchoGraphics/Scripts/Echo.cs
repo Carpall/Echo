@@ -5,7 +5,6 @@ using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
 using Echo.Properties;
-using Echo;
 
 namespace Echo
 {
@@ -117,97 +116,6 @@ namespace Echo
             println(wrm);
             setColor(ConsoleColor.White);
         }
-
-        //static void ()
-        //{
-        //    Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
-        //    Server.CurrentChannel = Settings.Default.CurrentChannel;
-        //    clear();
-        //    bool IsRun = true;
-        //    info(Echo.Info);
-
-        //    Server.Start();
-
-        //    while (IsRun) {
-        //        Server.ReceiveMessage();
-        //        switch ("") {
-
-        //            case "help":
-        //                info("ref -> refresh 'echo' to get messages of currect channel");
-        //                info("send -> send a message on current channel");
-        //                info("sendfile/send file -> send a message contains a file on current channel");
-        //                info("down -> download files using its index");
-        //                info("res -> reset current chat history");
-        //                info("ce -> change encryption");
-        //                info("ge -> get all avaiables encryptions");
-        //                info("gce -> get current encryption");
-        //                info("cc -> change channel");
-        //                info("gc -> get all avaiables encryptions");
-        //                info("gcc -> get current encryption");
-        //                info("csl -> clear console");
-        //                info("exit -> exit from 'echo'");
-        //                info("help -> get all commands describetion");
-        //                break;
-        //            case "exit":
-        //                print("y/n\n> ");
-        //                IsRun = (readCmd()[0] == 'y') ? false:true;
-        //                break;
-        //            case "res":
-        //                Server.Reset();
-        //                break;
-        //            case "cls":
-        //                clear();
-        //                break;
-        //            case "cc":
-        //                print("> ");
-        //                Server.CurrentChannel = readCmd();
-        //                break;
-        //            case "gcc":
-        //                info($"Current channel: {Server.CurrentChannel}");
-        //                break;
-        //            case "gc":
-        //                for(int i=0;i<Echo.AvaiableChannels.Count();i++)
-        //                    info(Echo.AvaiableChannels[i].ToString());
-        //                break;
-        //            case "send":
-        //                print("> ");
-        //                Server.SendMessage($"[m]{Encryption.Encrypt(read(), Echo.CurrentEncryption)}[nl]");
-        //                break;
-        //            case "down":
-        //                Server.ReceiveFile();
-        //                break;
-        //            case "sendfile":
-        //                print("> ");
-        //                Server.SendFile(System.IO.File.ReadAllText(read()));
-        //                break;
-        //            case "ref":
-        //                setColor(ConsoleColor.DarkMagenta);
-        //                print("Messages:\n");
-        //                setColor(ConsoleColor.DarkYellow);
-        //                string[] separeMessages = Server.Messages.Replace("[nl]", "⁕").Split('⁕');
-        //                try {
-        //                    foreach (string splittingPart in separeMessages)
-        //                        println(splittingPart.Substring(splittingPart.IndexOf("[m]")));
-        //                } catch (ArgumentOutOfRangeException) { }
-        //                setColor(ConsoleColor.White);
-        //                break;
-        //            case "ge":
-        //                for (int i = 0; i < Echo.AvaiableEncryptions.Count(); i++) {
-        //                    println($"{i}.{Echo.AvaiableEncryptions[i]}");
-        //                }
-        //                break;
-        //            case "gce":
-        //                info($"Current encryption method: {Echo.CurrentEncryption.ToString()}");
-        //                break;
-        //            case "ce":
-        //                print("> ");
-        //                Echo.CurrentEncryption = readCmd();
-        //                break;
-        //            default:
-        //                warm("Bad syntax!");
-        //                break;
-        //        }
-              //}
     }
     class Host
     {
@@ -227,10 +135,12 @@ namespace Echo
         public string Files = "";
         public string CurrentChannel
         {
-            get {
+            get
+            {
                 return _currcha.ToString();
             }
-            set {
+            set
+            {
                 switch (Program.toCmd(value)) {
                     case "c0": _currcha = Channels.c0; break;
                     case "c1": _currcha = Channels.c1; break;
@@ -238,7 +148,7 @@ namespace Echo
                     case "c3": _currcha = Channels.c3; break;
                     case "c4": _currcha = Channels.c4; break;
                     case "c5": _currcha = Channels.c5; break;
-                    default:Program.except($"'{value}' is not a valid channel.", "Type 'gc' to get all avaiable channels"); break;
+                    default: Program.except($"'{value}' is not a valid channel.", "Type 'gc' to get all avaiable channels"); break;
                 }
                 Settings.Default.CurrentChannel = CurrentChannel;
                 Settings.Default.Save();
@@ -261,7 +171,7 @@ namespace Echo
             try {
                 using (System.IO.StreamWriter sw = new System.IO.StreamWriter($@"C:\Users\{username}\Downloads\echoFile")) {
                     string f = Client.Get("Files").Body.Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\t", "\t").Replace("\\a", "\a").Replace("\\v", "\v").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\\"", "\"");
-                    sw.Write(f.Substring(1, f.Count()-2));
+                    sw.Write(f.Substring(1, f.Count() - 2));
                 }
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
