@@ -24,7 +24,7 @@ namespace Echo
     class Package
     {
         // Private
-        private Encryptions _currenc = Encryptions.Rot13;
+        public Encryptions _currenc = Encryptions.Rot13;
 
         // Public
         public string CurrentEncryption
@@ -52,10 +52,6 @@ namespace Echo
         }
 
         public string Info { get; set; } = "Echo build 1 - auth: Carpal repo: https://github.com/Carpall/Echo.git";
-
-        // PublicInfo
-        public Encryptions[] AvaiableEncryptions = { Encryptions.Rot13 };
-        public Channels[] AvaiableChannels = { Channels.c0, Channels.c1, Channels.c2, Channels.c3, Channels.c4, Channels.c5 };
     }
     class Program
     {
@@ -147,6 +143,7 @@ namespace Echo
         {
             while (isRun) {
                 Server.ReceiveMessage();
+                setColor(ConsoleColor.DarkMagenta);
                 print("@> ");
                 switch (toCmd(Console.ReadLine())) {
                     case "help":
@@ -168,11 +165,16 @@ namespace Echo
                         println("|- down    | donwload files            |");
                         println("|- exit    | exit from Echo            |");
                         println("|- help    | get all commands          |");
+                        println("|- echo    | restart Echo              |");
                         println("----------------------------------------");
                         setColor(ConsoleColor.White);
                         break;
                     case "cls":
                         clear();
+                        break;
+                    case "echo":
+                        clear();
+                        Main(null);
                         break;
                     case "setc":
                         ask("What channel? 'getc' to get aviable channels");
@@ -201,12 +203,15 @@ namespace Echo
                         println("-----------------------");
                         setColor(ConsoleColor.White);
                         break;
+                    case "exit":
+                        isRun = false;
+                        break;
                     case "sendm":
                         string mess = "";
                         while (true) {
                             string r = read();
                             if (string.IsNullOrWhiteSpace(r)) break;
-                            mess += "[m]" + r + '⚹';
+                            mess += "[m]" + Encryption.Encrypt(r, Echo._currenc) + '⚹';
                         }
                         Server.SendMessage(mess);
                         break;
@@ -232,10 +237,11 @@ namespace Echo
                         string[] split = Server.Messages.Split('⚹');
                         try {
                             for (int i = 0; i < split.Length; i++) {
-                                m.AppendLine(split[i].Substring(split[i].IndexOf("[m]")));
+                                m.AppendLine("> " + split[i].Substring(split[i].IndexOf("[m]")+3));
                             }
                         } catch (ArgumentOutOfRangeException) { }
-                        warm(m.ToString());
+                        if (!string.IsNullOrWhiteSpace(m.ToString())) ask(" Messages:");
+                        warm(Encryption.Decrypt(m.ToString(), Echo._currenc));
                         break;
                     default:
                         warm("Bad command!");
