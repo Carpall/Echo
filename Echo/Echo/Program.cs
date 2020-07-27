@@ -4,7 +4,7 @@ using FireSharp;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
-using EchoGraphics.Properties;
+using Echo.Properties;
 
 namespace Echo
 {
@@ -63,24 +63,42 @@ namespace Echo
         {
             success($"Encryption saved as {enc.ToString()}");
         }
+        public static void setColor(ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+        }
         public static void except(string err, string help)
-        {//creare per ogni tipo una info nella msbx
+        {
+            setColor(ConsoleColor.DarkRed);
             println($"Except: {err}\nHelp: {help}");
+            setColor(ConsoleColor.White);
         }
         public static void println(string arg)
         {
-            System.Windows.Forms.MessageBox.Show(arg);
+            Console.WriteLine(arg);
+        }
+        public static void print(string arg)
+        {
+            Console.Write(arg);
         }
         public static void info(string inf)
         {
+            setColor(ConsoleColor.DarkBlue);
             Console.WriteLine(inf);
+            setColor(ConsoleColor.White);
         }
         public static string readCmd()
         {
+            setColor(ConsoleColor.DarkMagenta);
+            print("@> ");
+            setColor(ConsoleColor.White);
             return toCmd(Console.ReadLine());
         }
         public static string read()
         {
+            setColor(ConsoleColor.DarkMagenta);
+            print("> ");
+            setColor(ConsoleColor.White);
             return Console.ReadLine();
         }
         public static string toCmd(string arg)
@@ -89,11 +107,71 @@ namespace Echo
         }
         public static void success(string succ)
         {
+            setColor(ConsoleColor.DarkGreen);
             println($"Success: {succ}");
+            setColor(ConsoleColor.White);
         }
         public static void warm(string wrm)
         {
+            setColor(ConsoleColor.DarkYellow);
             println(wrm);
+            setColor(ConsoleColor.White);
+        }
+        public static void clear()
+        {
+            Console.Clear();
+            setColor(ConsoleColor.White);
+        }
+
+        public static void Main(string[] args)
+        {
+            info("Echo Build 1 -> Carpal: https://github.com/Carpall/Echo");
+            Server = new Host();
+            Echo = new Package();
+            ProcessLoop();
+        }
+        static Host Server;
+        static Package Echo;
+        static bool isRun { get; set; } = true;
+        public static void ProcessLoop()
+        {
+            while (isRun) {
+                Server.ReceiveMessage();
+                switch (readCmd()) {
+                    case "help":
+                        setColor(ConsoleColor.DarkBlue);
+                        println("---------------Help------------");
+                        println("|- cls     | clear console    |");
+                        println("|- sendm   | send messages    |");
+                        println("|- sendf   | send files       |");
+                        println("|- rec     | receive messages |");
+                        println("|- changec | change channel   |");
+                        println("|- changee | change encryption|");
+                        println("|- down    | donwload files   |");
+                        println("-------------------------------");
+                        setColor(ConsoleColor.White);
+                        break;
+                    case "cls":
+                        clear();
+                        break;
+                    case "sendm":
+                        string mess = "";
+                        string reading = "";
+                        do {
+                            reading = read();
+                            mess += reading;
+                        } while (string.IsNullOrWhiteSpace(reading));
+                        Server.SendMessage(mess);
+                        break;
+                    case "rec":
+                        setColor(ConsoleColor.DarkGray);
+                        print(Server.Messages);
+                        break;
+                    default:
+                        warm("Bad command!");
+                        break;
+                }
+            }
         }
     }
     class Host
@@ -138,7 +216,7 @@ namespace Echo
         public async void ReceiveMessage()
         {
             try {
-                Messages = (await Client.GetTaskAsync(_currcha.ToString())).Body;
+                Messages = (await Client.GetTaskAsync(_currcha.ToString())).ResultAs<string>();
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
@@ -175,6 +253,7 @@ namespace Echo
         {
             try {
                 await Client.PushTaskAsync(_currcha.ToString(), message);
+                Program.success($"Message Sent in {CurrentChannel} channel");
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }

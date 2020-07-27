@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoGraphics", "EchoGraphics\EchoGraphics.csproj", "{2A522D06-363E-414D-A660-5860D18C6A42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echo", "Echo\Echo.csproj", "{FABCFAC8-3820-4FEC-B5EA-29E18C7F3F92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2A522D06-363E-414D-A660-5860D18C6A42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A522D06-363E-414D-A660-5860D18C6A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A522D06-363E-414D-A660-5860D18C6A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A522D06-363E-414D-A660-5860D18C6A42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FABCFAC8-3820-4FEC-B5EA-29E18C7F3F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FABCFAC8-3820-4FEC-B5EA-29E18C7F3F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FABCFAC8-3820-4FEC-B5EA-29E18C7F3F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FABCFAC8-3820-4FEC-B5EA-29E18C7F3F92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

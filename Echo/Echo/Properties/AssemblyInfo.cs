@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Le informazioni generali relative a un assembly sono controllate dal seguente 
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
-[assembly: AssemblyTitle("EchoGraphics")]
+[assembly: AssemblyTitle("Echo")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("EchoGraphics")]
+[assembly: AssemblyProduct("Echo")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Se il progetto viene esposto a COM, il GUID seguente verrà utilizzato come ID della libreria dei tipi
-[assembly: Guid("2a522d06-363e-414d-a660-5860d18c6a42")]
+[assembly: Guid("fabcfac8-3820-4fec-b5ea-29e18c7f3f92")]
 
 // Le informazioni sulla versione di un assembly sono costituite dai seguenti quattro valori:
 //
