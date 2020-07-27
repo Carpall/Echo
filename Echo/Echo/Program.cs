@@ -42,7 +42,7 @@ namespace Echo
                         Program.encryptionSaved(Encryptions.Rot13);
                         break;
                     default:
-                        Program.except("Bad syntax!", "Try 'ge' to get all avaiable encryptions.");
+                        Program.except("Bad syntax!", "Try 'gete' to get all avaiable encryptions.");
                         break;
 
                 }
@@ -90,7 +90,7 @@ namespace Echo
         public static string readCmd()
         {
             setColor(ConsoleColor.DarkMagenta);
-            print("@> ");
+            print("> ");
             setColor(ConsoleColor.White);
             return toCmd(Console.ReadLine());
         }
@@ -122,50 +122,120 @@ namespace Echo
             Console.Clear();
             setColor(ConsoleColor.White);
         }
+        public static void ask(string msg)
+        {
+            setColor(ConsoleColor.DarkMagenta);
+            println(msg);
+            setColor(ConsoleColor.White);
+        }
 
+
+        [STAThread]
         public static void Main(string[] args)
         {
+            Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
+            clear();
+            Server.CurrentChannel = Settings.Default.CurrentChannel;
             info("Echo Build 1 -> Carpal: https://github.com/Carpall/Echo");
-            Server = new Host();
-            Echo = new Package();
+            Server.Start();
             ProcessLoop();
         }
-        static Host Server;
-        static Package Echo;
+        static Host Server = new Host();
+        static Package Echo = new Package();
         static bool isRun { get; set; } = true;
         public static void ProcessLoop()
         {
             while (isRun) {
                 Server.ReceiveMessage();
-                switch (readCmd()) {
+                print("@> ");
+                switch (toCmd(Console.ReadLine())) {
                     case "help":
                         setColor(ConsoleColor.DarkBlue);
-                        println("---------------Help------------");
-                        println("|- cls     | clear console    |");
-                        println("|- sendm   | send messages    |");
-                        println("|- sendf   | send files       |");
-                        println("|- rec     | receive messages |");
-                        println("|- changec | change channel   |");
-                        println("|- changee | change encryption|");
-                        println("|- down    | donwload files   |");
-                        println("-------------------------------");
+                        println("------------------Help------------------");
+                        setColor(ConsoleColor.DarkGreen);
+                        println(" Current Channel: "+Server.CurrentChannel);
+                        println(" Current Encryption: " + Echo.CurrentEncryption);
+                        setColor(ConsoleColor.DarkBlue);
+                        println("|- cls     | clear console             |");
+                        println("|- setc    | change current channel    |");
+                        println("|- sete    | change current encryption |");
+                        println("|- getc    | get avaible channel       |");
+                        println("|- gete    | get avaible encryption    |");
+                        println("|- sendm   | send messages             |");
+                        println("|- sendf   | send files                |");
+                        println("|- rec     | receive messages          |");
+                        println("|- reset   | reset channel             |");
+                        println("|- down    | donwload files            |");
+                        println("|- exit    | exit from Echo            |");
+                        println("|- help    | get all commands          |");
+                        println("----------------------------------------");
                         setColor(ConsoleColor.White);
                         break;
                     case "cls":
                         clear();
                         break;
+                    case "setc":
+                        ask("What channel? 'getc' to get aviable channels");
+                        Server.CurrentChannel = readCmd();
+                        break;
+                    case "sete":
+                        ask("What encryption? 'gete' to get aviable encryptions");
+                        Echo.CurrentEncryption = readCmd();
+                        break;
+                    case "getc":
+                        setColor(ConsoleColor.DarkBlue);
+                        println("------Channels------");
+                        println("|- c0 | Testing    |");
+                        println("|- c1 | Testing    |");
+                        println("|- c2 | Testing    |");
+                        println("|- c3 | Testing    |");
+                        println("|- c4 | Testing    |");
+                        println("|- c5 | Testing    |");
+                        println("--------------------");
+                        setColor(ConsoleColor.White);
+                        break;
+                    case "gete":
+                        setColor(ConsoleColor.DarkBlue);
+                        println("------Encryptions------");
+                        println("|- rot13 | Testing    |");
+                        println("-----------------------");
+                        setColor(ConsoleColor.White);
+                        break;
                     case "sendm":
                         string mess = "";
-                        string reading = "";
-                        do {
-                            reading = read();
-                            mess += reading;
-                        } while (string.IsNullOrWhiteSpace(reading));
+                        while (true) {
+                            string r = read();
+                            if (string.IsNullOrWhiteSpace(r)) break;
+                            mess += "[m]" + r + '⚹';
+                        }
                         Server.SendMessage(mess);
                         break;
+                    case "down":
+                        System.Windows.Forms.FolderBrowserDialog x = new System.Windows.Forms.FolderBrowserDialog();
+                        if (x.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                            Server.ReceiveFile(x.SelectedPath);
+                        }
+                        warm("Downloading...");
+                        break;
+                    case "sendf":
+                        System.Windows.Forms.OpenFileDialog y = new System.Windows.Forms.OpenFileDialog();
+                        if (y.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                            Server.SendFile(System.IO.File.ReadAllText(y.FileName));
+                        } warm("Loading...");
+                        break;
+                    case "reset":
+                        ask("Databse Access Token Request:");
+                        Server.Reset();
+                        break;
                     case "rec":
-                        setColor(ConsoleColor.DarkGray);
-                        print(Server.Messages);
+                        System.Text.StringBuilder m = new System.Text.StringBuilder();
+                        string[] split = Server.Messages.Split('⚹');
+                        try {
+                            for (int i = 0; i < split.Length; i++) {
+                                m.AppendLine(split[i].Substring(split[i].IndexOf("[m]")));
+                            }
+                        } catch (ArgumentOutOfRangeException) { }
+                        warm(m.ToString());
                         break;
                     default:
                         warm("Bad command!");
@@ -205,7 +275,7 @@ namespace Echo
                     case "c3": _currcha = Channels.c3; break;
                     case "c4": _currcha = Channels.c4; break;
                     case "c5": _currcha = Channels.c5; break;
-                    default: Program.except($"'{value}' is not a valid channel.", "Type 'gc' to get all avaiable channels"); break;
+                    default: Program.except($"'{value}' is not a valid channel.", "Type 'getc' to get all avaiable channels"); break;
                 }
                 Settings.Default.CurrentChannel = CurrentChannel;
                 Settings.Default.Save();
@@ -216,32 +286,26 @@ namespace Echo
         public async void ReceiveMessage()
         {
             try {
-                Messages = (await Client.GetTaskAsync(_currcha.ToString())).ResultAs<string>();
+                Messages = (await Client.GetTaskAsync(_currcha.ToString())).Body;
             } catch (Exception) {
-                Program.except("Connection, to main server, failed.", "Check your connection!");
+                Program.except("Connection, to main server, failed.", "Check your connection!\n");
             }
         }
-        public void ReceiveFile()
+        public void ReceiveFile(string path)
         {
-            string username = Environment.UserName;
-            try {
-                using (System.IO.StreamWriter sw = new System.IO.StreamWriter($@"C:\Users\{username}\Downloads\echoFile")) {
-                    string f = Client.Get("Files").Body.Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\t", "\t").Replace("\\a", "\a").Replace("\\v", "\v").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\\"", "\"");
-                    sw.Write(f.Substring(1, f.Count() - 2));
-                }
-            } catch (Exception) {
-                Program.except("Connection, to main server, failed.", "Check your connection!");
-            }
-            System.Diagnostics.Process.Start($@"C:\Users\{username}\Downloads\echoFile");
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path+"/EchoFile")) {
+                string f = Client.Get("Files").Body.Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\t", "\t").Replace("\\a", "\a").Replace("\\v", "\v").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\\"", "\"");
+                sw.Write(f.Substring(1, f.Count() - 2));
+            }Program.success("Downloaded!");
         }
-        public async void Reset()
+        public void Reset()
         {
             if (Program.read() == pass[0]) {
                 ReceiveMessage();
                 Program.success("Pass Correct!");
                 try {
-                    SetResponse response = await Client.SetTaskAsync(_currcha.ToString(), "");
-                    Client.Set<string>(_currcha.ToString(), "");
+                    Client.Set(_currcha.ToString(), "");
+                    Program.success($"Reset {CurrentChannel}");
                 } catch (Exception) {
                     Program.except("Connection, to main server, failed.", "Check your connection!");
                 }
@@ -253,7 +317,6 @@ namespace Echo
         {
             try {
                 await Client.PushTaskAsync(_currcha.ToString(), message);
-                Program.success($"Message Sent in {CurrentChannel} channel");
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
