@@ -25,8 +25,21 @@ namespace Echo
     {
         // Private
         public Encryptions _currenc = Encryptions.Rot13;
-
+        public string _username = Settings.Default.Username;
         // Public
+        public string Username
+        {
+            get
+            {
+                return _username + ": ";
+            }
+            set
+            {
+                _username = value;
+                Settings.Default.Username = value;
+                Settings.Default.Save();
+            }
+        }
         public string CurrentEncryption
         {
             get
@@ -50,6 +63,7 @@ namespace Echo
                 Settings.Default.Save();
             }
         }
+        public string PrivateChat { get; set; } = "Null";
 
         public string Info { get; set; } = "Echo build 1 - auth: Carpal repo: https://github.com/Carpall/Echo.git";
     }
@@ -129,6 +143,12 @@ namespace Echo
         [STAThread]
         public static void Main(string[] args)
         {
+            if (Settings.Default.Username == "EchoUser") {
+                setColor(ConsoleColor.DarkMagenta);
+                print("Username:\n");
+                Echo.Username = read();
+                clear();
+            }
             Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
             clear();
             Server.CurrentChannel = Settings.Default.CurrentChannel;
@@ -149,14 +169,14 @@ namespace Echo
                     case "help":
                         setColor(ConsoleColor.DarkBlue);
                         println("------------------Help------------------");
-                        setColor(ConsoleColor.DarkGreen);
-                        println(" Current Channel: "+Server.CurrentChannel);
-                        println(" Current Encryption: " + Echo.CurrentEncryption);
-                        setColor(ConsoleColor.DarkBlue);
+                        println("|- info    | get main info about you   |");
                         println("|- cls     | clear console             |");
                         println("|- setc    | change current channel    |");
+                        println("|- setu    | change username           |");
                         println("|- sete    | change current encryption |");
                         println("|- getc    | get avaible channel       |");
+                        println("|- connect | connect to private chat   |");
+                        println("|- leave   | leave a private chat      |");
                         println("|- gete    | get avaible encryption    |");
                         println("|- sendm   | send messages             |");
                         println("|- sendf   | send files                |");
@@ -169,8 +189,33 @@ namespace Echo
                         println("----------------------------------------");
                         setColor(ConsoleColor.White);
                         break;
+                    case "info":
+                        setColor(ConsoleColor.DarkBlue);
+                        println("------Info------");
+                        println("|- Current Channel: " + Server.CurrentChannel);
+                        println("|- Private Chat: " + Echo.PrivateChat);
+                        println("|- Current Encryption: " + Echo.CurrentEncryption);
+                        println("|- Username: " + Echo._username);
+                        println("----------------");
+                        setColor(ConsoleColor.White);
+                        break;
                     case "cls":
                         clear();
+                        break;
+                    case "connect":
+                        setColor(ConsoleColor.DarkRed);
+                        println("Chat ID & Password (note: id mustn't exists jet, please don't dislose it to everyone!)");
+                        ask("Id:");
+                        string id = read();
+                        ask("Password:");
+                        setColor(ConsoleColor.White);
+                        Server.GenerateChatRoom(id, read());
+                        Echo.PrivateChat = Server.Config.BasePath.Substring(Server.Config.BasePath.IndexOf("Messages/")+9);
+                        break;
+                    case "leave":
+                        Server.CloseChatRoom();
+                        success("Disconnected!");
+                        Echo.PrivateChat = "Null";
                         break;
                     case "echo":
                         clear();
@@ -183,6 +228,10 @@ namespace Echo
                     case "sete":
                         ask("What encryption? 'gete' to get aviable encryptions");
                         Echo.CurrentEncryption = readCmd();
+                        break;
+                    case "setu":
+                        ask("New Username:");
+                        Echo.Username = read();
                         break;
                     case "getc":
                         setColor(ConsoleColor.DarkBlue);
@@ -211,7 +260,7 @@ namespace Echo
                         while (true) {
                             string r = read();
                             if (string.IsNullOrWhiteSpace(r)) break;
-                            mess += "[m]" + Encryption.Encrypt(r, Echo._currenc) + '⚹';
+                            else mess += "[m]"+ Echo.Username + Encryption.Encrypt(r, Echo._currenc) + '⚹';
                         }
                         Server.SendMessage(mess);
                         break;
@@ -226,10 +275,11 @@ namespace Echo
                         System.Windows.Forms.OpenFileDialog y = new System.Windows.Forms.OpenFileDialog();
                         if (y.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                             Server.SendFile(System.IO.File.ReadAllText(y.FileName));
-                        } warm("Loading...");
+                        }
+                        warm("Loading...");
                         break;
                     case "reset":
-                        ask("Databse Access Token Request:");
+                        ask("Database Access Token Request:");
                         Server.Reset();
                         break;
                     case "rec":
@@ -237,11 +287,16 @@ namespace Echo
                         string[] split = Server.Messages.Split('⚹');
                         try {
                             for (int i = 0; i < split.Length; i++) {
-                                m.AppendLine("> " + split[i].Substring(split[i].IndexOf("[m]")+3));
+                                string s = split[i].Substring(split[i].IndexOf("[m]") + 3);
+                                setColor(ConsoleColor.DarkGreen);
+                                print(s.Substring(0, s.IndexOf(':') + 1));
+                                setColor(ConsoleColor.DarkYellow);
+                                println(Encryption.Decrypt(s.Substring(s.IndexOf(':') + 1), Echo._currenc));
                             }
+                            setColor(ConsoleColor.Green);
                         } catch (ArgumentOutOfRangeException) { }
                         if (!string.IsNullOrWhiteSpace(m.ToString())) ask(" Messages:");
-                        warm(Encryption.Decrypt(m.ToString(), Echo._currenc));
+                        warm(m.ToString());
                         break;
                     default:
                         warm("Bad command!");
@@ -256,10 +311,11 @@ namespace Echo
         public string[] pass = System.IO.File.ReadAllText(@"C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\firebase.pass").Split('|');
         public void Start()
         {
-            Client = new FirebaseClient(new FirebaseConfig {
+            Config = new FirebaseConfig {
                 AuthSecret = pass[0],
                 BasePath = pass[1],
-            });
+            };
+            Client = new FirebaseClient(Config);
             if (Client == null) Program.except("Echo can not connect with main server.", "Check your connection!");
             else Program.success("Echo connected without error!");
         }
@@ -287,8 +343,10 @@ namespace Echo
                 Settings.Default.Save();
             }
         }
+        public IFirebaseConfig Config;
         // Private
         private Channels _currcha = Channels.c0;
+
         public async void ReceiveMessage()
         {
             try {
@@ -299,10 +357,11 @@ namespace Echo
         }
         public void ReceiveFile(string path)
         {
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path+"/EchoFile")) {
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path + "/EchoFile")) {
                 string f = Client.Get("Files").Body.Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\t", "\t").Replace("\\a", "\a").Replace("\\v", "\v").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\\"", "\"");
                 sw.Write(f.Substring(1, f.Count() - 2));
-            }Program.success("Downloaded!");
+            }
+            Program.success("Downloaded!");
         }
         public void Reset()
         {
@@ -327,7 +386,6 @@ namespace Echo
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
         }
-
         public void SendFile(string fileContent)
         {
             try {
@@ -335,6 +393,22 @@ namespace Echo
             } catch (Exception) {
                 Program.except("Connection, to main server, failed.", "Check your connection!");
             }
+        }
+        public void GenerateChatRoom(string id, string password)
+        {
+            Config = new FirebaseConfig {
+                AuthSecret = pass[0],
+                BasePath = $"{pass[1]}/Privates/{id}{password}/",
+            };
+            Client = new FirebaseClient(Config);
+        }
+        public void CloseChatRoom()
+        {
+            Config = new FirebaseConfig {
+                AuthSecret = pass[0],
+                BasePath = pass[1],
+            };
+            Client = new FirebaseClient(Config);
         }
     }
     class Encryption
