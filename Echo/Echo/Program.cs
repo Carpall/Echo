@@ -64,6 +64,7 @@ namespace Echo
             }
         }
         public string PrivateChat { get; set; } = "Null";
+        public string Version { get; set; } = "0.1";
 
         public string Info { get; set; } = "Echo build 1 - auth: Carpal repo: https://github.com/Carpall/Echo.git";
     }
@@ -143,18 +144,26 @@ namespace Echo
         [STAThread]
         public static void Main(string[] args)
         {
-            if (Settings.Default.Username == "EchoUser") {
-                setColor(ConsoleColor.DarkMagenta);
-                print("Username:\n");
-                Echo.Username = read();
+            Console.Title = "Echo";
+
+            if (Server.IsRightVersion(Echo.Version)) {
+                if (Settings.Default.Username == "") {
+                    setColor(ConsoleColor.DarkMagenta);
+                    print("Username:\n");
+                    Echo.Username = read();
+                    clear();
+                }
+                Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
                 clear();
+                Server.CurrentChannel = Settings.Default.CurrentChannel;
+                info("Echo Build 1 -> Carpal: https://github.com/Carpall/Echo");
+                Server.Start();
+                ProcessLoop();
+            } else {
+                warm("Your version is obsolete, downloading page is opening...");
+                System.Diagnostics.Process.Start("https://github.com/Carpall/Echo/releases");
+                Console.ReadKey();
             }
-            Echo.CurrentEncryption = Settings.Default.CurrentEncryption;
-            clear();
-            Server.CurrentChannel = Settings.Default.CurrentChannel;
-            info("Echo Build 1 -> Carpal: https://github.com/Carpall/Echo");
-            Server.Start();
-            ProcessLoop();
         }
         static Host Server = new Host();
         static Package Echo = new Package();
@@ -192,6 +201,7 @@ namespace Echo
                     case "info":
                         setColor(ConsoleColor.DarkBlue);
                         println("------Info------");
+                        println("|- Version: " + Echo.Version);
                         println("|- Current Channel: " + Server.CurrentChannel);
                         println("|- Private Chat: " + Echo.PrivateChat);
                         println("|- Current Encryption: " + Echo.CurrentEncryption);
@@ -309,6 +319,15 @@ namespace Echo
     {
         public IFirebaseClient Client;
         public string[] pass = System.IO.File.ReadAllText(@"C:\Users\Mondelli\Documents\Visual Studio 2015\Projects\firebase.pass").Split('|');
+        public bool IsRightVersion(string Version)
+        {
+            Client = new FirebaseClient(new FirebaseConfig {
+                AuthSecret = pass[0],
+                BasePath = pass[1].Replace("Messages", "Version"),
+            });
+            if (Client.Get("").Body.Replace("\"", "") != Version) return false;
+            return true;
+        }
         public void Start()
         {
             Config = new FirebaseConfig {
